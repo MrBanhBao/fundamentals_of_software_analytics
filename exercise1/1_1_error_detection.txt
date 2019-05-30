@@ -1,0 +1,24 @@
+number of delimeters: the numbers of delimeters are not the same for each line
+- header got 17 semicolons, but lines 2, 3, 4, 8, 9, 13, 14, 15, 16, 17 have 18 \
+and line 12 20 semicolons
++ add semicolons for missing value
+
+different annotations for "missing values": it seems that there were used two different kinds \ 
+of values for annotating "missing values" on column "F-Mccc-1/F-RLoc".
+- empty cells and cells with value 0 in column "F-Mccc-1/F-RLoc"
++ fill empty cells with 0 or remove 0
+
+inconsistent annotations for one value: in column "IsGenerated" the value "Yes" exists in two \
+ways ("Yes" and "yes").
+- yes
++ Yes
+
+wrong values in column: in Column IsGenerated there are values that do not make semantic sense. \
+The column name "IsGenerated" implies boolean values but also got numerical values.
+- 0, 0, 2, 0, 0, 0, 3, 4 
++ change n =< O to No and n>0 to Yes?
+
+missing header file: one header file probably be used for multiplce c or/and cpp files.
+- source/liblocate/include/liblocate/liblocate.h
++ include another header file
+
