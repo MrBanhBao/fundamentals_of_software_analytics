@@ -1,0 +1,12 @@
+List of the top 10 most-often changed source code files in last 3 months:
+
+TS/src/compiler/checker.ts
+TS/src/compiler/types.ts
+TS/tests/baselines/reference/api/tsserverlibrary.d.ts
+TS/src/compiler/program.ts
+TS/tests/baselines/reference/api/typescript.d.ts
+TS/src/compiler/tsbuild.ts
+TS/src/compiler/utilities.ts
+TS/src/compiler/commandLineParser.ts
+TS/src/compiler/emitter.ts
+TS/src/server/session.ts
