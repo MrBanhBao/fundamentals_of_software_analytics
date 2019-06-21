@@ -1,7 +1,9 @@
 import argparse
-
+import os
 
 def main(output):
+    # cwd = os.getcwd()
+    cwd = '/home/hao/mystuff/fundamentals_of_software_analytics/exercise3/resources/webgl-operate'
     pass
 
 
