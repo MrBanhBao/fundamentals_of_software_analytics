@@ -14,6 +14,7 @@ def main(output, dimred):
     cwd = '/Users/hao/workspace/hpi-de/2nd_Semester/fsa/exercise3/resources/webgl-operate'
     df = create_commit_df(cwd)
     vocab = create_vocab(df.tokens)
+    df.to_hdf('alphaOnly.h5', key='commit')
 
     bow_df = create_bow_df(df, vocab)
     vecs = [np.array(list(bow.values())) for bow in bow_df.bow.values]
@@ -51,7 +52,7 @@ def create_commit_df(git_dir):
     return pd.DataFrame(data)
 
 
-def tokenize_diff(commit, alpha_only=False):
+def tokenize_diff(commit, alpha_only=True):
     words = []
 
     parent = commit.parents[0] if commit.parents else None
