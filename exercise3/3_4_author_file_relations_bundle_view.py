@@ -15,7 +15,7 @@ def main():
 
     agg_authors_df = calc_aggr_author_df(authors_df)
     agg_modules_df = calc_aggr_module_df(modules_df)
-    agg_edges_df = agg_edgde_df(authors_df)
+    agg_edges_df = agg_edge_df(authors_df)
 
     print('hierarchy;authors;{}'.format(len(agg_authors_df)))
     for index, row in agg_authors_df.iterrows():
@@ -100,7 +100,7 @@ def calc_aggr_module_df(module_df):
     return pd.DataFrame({'module': modules, 'noc': nocs, 'mtbc': mtbcs})
 
 
-def agg_edgde_df(author_df):
+def agg_edge_df(author_df):
     authors = []
     files = []
     for index, row in author_df.iterrows():
