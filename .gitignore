@@ -290,3 +290,6 @@ $RECYCLE.BIN/
 */resources/*
 qtbase/
 *.zip
+
+exercise*/margaux/*.py
+exercise*/hao/*.py
