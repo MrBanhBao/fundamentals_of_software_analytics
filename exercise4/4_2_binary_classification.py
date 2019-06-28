@@ -2,6 +2,7 @@ import argparse
 import pandas as pd
 import numpy as np
 from sklearn.linear_model import LogisticRegression
+from sklearn.svm import SVC
 
 
 def main(train, predict, type, output_error_values):
@@ -9,11 +10,32 @@ def main(train, predict, type, output_error_values):
     pred_df = parse_to_df(predict)
 
     X_t, y_t = preprocess_data(train_df)
-    reg = LogisticRegression().fit(X_t, y_t)
+
+    if type == 'support-vector-machine':
+        model = SVC(kernel='rbf', gamma=0.5, C=1.0).fit(X_t, y_t)
+    else:
+        model = LogisticRegression().fit(X_t, y_t)
 
     X_p, y_p = preprocess_data(pred_df)
-    y_o = reg.predict(X_p)
 
+    if output_error_values:
+        train_score = model.score(X_t, y_t)
+        pred_score = model.score(X_p, y_p)
+
+        err_report = create_error_report(type, train_score, pred_score)
+
+        with open("nasa_error_report.txt", "w") as text_file:
+            text_file.write(err_report)
+            text_file.close()
+        print(err_report)
+
+    else:
+        y_o = model.predict(X_p)
+        for val in y_o:
+            if val:
+                print('Y')
+            else:
+                print('N')
 
 
 def parse_to_df(file):
@@ -67,6 +89,19 @@ def preprocess_data(df):
     mask = ~y.isna()
 
     return X[mask], y[mask]
+
+
+def create_error_report(type, train_score, pred_score):
+    err_report = ''
+    if type == 'logistic-regression':
+        err_report += 'Logistic regression error report\n'
+    else:
+        err_report += 'Logistic regression error report\n'
+
+    err_report += 'train error: {}%\n'.format(1 - train_score)
+    err_report += 'train error: {}%\n'.format(1 - pred_score)
+
+    return err_report
 
 
 if __name__ == '__main__':
