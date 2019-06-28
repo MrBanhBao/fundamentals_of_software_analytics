@@ -6,10 +6,14 @@ from sklearn.linear_model import LogisticRegression
 
 def main(train, predict, type, output_error_values):
     train_df = parse_to_df(train)
-    predict_df = parse_to_df(predict)
+    pred_df = parse_to_df(predict)
 
     X_t, y_t = preprocess_data(train_df)
     reg = LogisticRegression().fit(X_t, y_t)
+
+    X_p, y_p = preprocess_data(pred_df)
+    y_o = reg.predict(X_p)
+
 
 
 def parse_to_df(file):
