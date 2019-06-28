@@ -32,6 +32,7 @@ def main(train, predict, type, output_error_values):
     else:
         y_o = model.predict(X_p)
         for val in y_o:
+            print(val)
             if val:
                 print('Y')
             else:
@@ -86,7 +87,7 @@ def preprocess_data(df):
     X = df.iloc[:, 0:-1].fillna(-1)
     y = df.iloc[:, -1]
 
-    mask = ~y.isna()
+    mask = ~y.isnull()
 
     return X[mask], y[mask]
 
@@ -99,7 +100,7 @@ def create_error_report(type, train_score, pred_score):
         err_report += 'Logistic regression error report\n'
 
     err_report += 'train error: {}%\n'.format(1 - train_score)
-    err_report += 'train error: {}%\n'.format(1 - pred_score)
+    err_report += 'prediction error: {}%\n'.format(1 - pred_score)
 
     return err_report
 
