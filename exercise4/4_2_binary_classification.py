@@ -12,7 +12,7 @@ def main(train, predict, type, output_error_values):
     X_t, y_t = preprocess_data(train_df)
 
     if type == 'support-vector-machine':
-        model = SVC(kernel='rbf', gamma=0.5, C=1.0).fit(X_t, y_t)
+        model = SVC(kernel='rbf', gamma=2, C=1.0).fit(X_t, y_t)
     else:
         model = LogisticRegression().fit(X_t, y_t)
 
