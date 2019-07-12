@@ -19,7 +19,7 @@ def main():
     cwd = os.getcwd()
     # start_time = time.time()
     # df = create_commit_df(cwd)
-    # df.to_hdf('100_days_commit_alphaonly.h5', key='commit')
+    # df.to_hdf('100_days_commits.h5', key='commit')
     # print("--- %s seconds ---" % (time.time() - start_time))
 
     for stdin in sys.stdin:
@@ -28,7 +28,7 @@ def main():
             source_code = f.read()
             sc_tokens = tokenize_sc(source_code)
 
-        df = pd.read_hdf('../../100_days_commits.h5')  # load data from init phase
+        df = pd.read_hdf('./100_days_commits.h5')  # load data from init phase
         vocab = create_vocab(df.tokens, top=256)
         df = df.groupby('author.name', as_index=False).agg({'tokens': sum})
         author_bow_df = create_bow_df(df, vocab)
