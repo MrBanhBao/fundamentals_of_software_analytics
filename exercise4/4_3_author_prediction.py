@@ -13,10 +13,9 @@ import matplotlib.pyplot as plt
 
 
 def main():
-    # cwd = os.getcwd()
+    cwd = os.getcwd()
 
     # !!! INIT PHASE !!! Took too long, that's why we saved our results
-    cwd = os.getcwd()
     # start_time = time.time()
     # df = create_commit_df(cwd)
     # df.to_hdf('100_days_commits.h5', key='commit')
