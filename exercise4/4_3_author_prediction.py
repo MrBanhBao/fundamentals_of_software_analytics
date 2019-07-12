@@ -1,4 +1,4 @@
-import argparse
+import sys
 import numpy as np
 import git
 import pandas as pd
@@ -15,43 +15,51 @@ import matplotlib.pyplot as plt
 def main():
     # cwd = os.getcwd()
 
-    # !!! INIT PHASE !!!
-    # cwd = os.getcwd()
+    # !!! INIT PHASE !!! Took too long, that's why we saved our results
+    cwd = os.getcwd()
     # start_time = time.time()
     # df = create_commit_df(cwd)
     # df.to_hdf('100_days_commit_alphaonly.h5', key='commit')
     # print("--- %s seconds ---" % (time.time() - start_time))
 
-    df = pd.read_hdf('./100_days_commit_alphaonly.h5')
-    vocab = create_vocab(df.tokens, top=256)
-    df = df.groupby('author.name', as_index=False).agg({'tokens': sum})
-    author_bow_df = create_bow_df(df, vocab)
-    vecs = [np.array(list(bow.values())) for bow in author_bow_df.bow.values]
+    for stdin in sys.stdin:
+        file = str.strip(stdin)
+        with open(os.path.join(cwd, file)) as f:
+            source_code = f.read()
+            sc_tokens = tokenize_sc(source_code)
 
-    tsne = TSNE(n_components=2, random_state=128)
-    vecs_2d = tsne.fit_transform(vecs)
+        df = pd.read_hdf('../../100_days_commits.h5')  # load data from init phase
+        vocab = create_vocab(df.tokens, top=256)
+        df = df.groupby('author.name', as_index=False).agg({'tokens': sum})
+        author_bow_df = create_bow_df(df, vocab)
+        vecs = [np.array(list(bow.values())) for bow in author_bow_df.bow.values]
 
-    vor = Voronoi(vecs_2d)
-    regions, vertices = voronoi_finite_polygons_2d(vor)
+        sc_bow = create_bow(sc_tokens, vocab)
+        sc_vec = [np.array(list(sc_bow.values()))]
 
-    offset = 10
-    point = Point(np.array([5.24142761e+01, 5.49075775e+01]))
+        tsne = TSNE(n_components=2, random_state=128)
+        vecs_2d = tsne.fit_transform(vecs+sc_vec)
 
-    voronoi_plot_2d(vor)
-    for i, region in enumerate(regions):
-        polygon_points = vertices[region]
-        polygon = Polygon(polygon_points)
-        if (polygon.contains(point)):
-            plt.fill(*zip(*polygon_points), alpha=0.4)
-            break
+        vor = Voronoi(vecs_2d[:-1])
+        regions, vertices = voronoi_finite_polygons_2d(vor)
 
-    print(author_bow_df.iloc[i]['author.name'])
+        offset = 10
+        point = Point(np.array(vecs_2d[-1]))
 
-    plt.plot(vecs_2d[:, 0], vecs_2d[:, 1], 'ko')
-    plt.xlim(vor.min_bound[0] - offset, vor.max_bound[0] + offset)
-    plt.ylim(vor.min_bound[1] - offset, vor.max_bound[1] + offset)
-    plt.plot(point.x, point.y, 'rs')
-    plt.show()
+        voronoi_plot_2d(vor)
+        for i, region in enumerate(regions):
+            polygon_points = vertices[region]
+            polygon = Polygon(polygon_points)
+            if polygon.contains(point):
+                print(author_bow_df.iloc[i]['author.name'])
+                plt.fill(*zip(*polygon_points), alpha=0.4)
+                break
+
+        plt.plot(vecs_2d[:-1, 0], vecs_2d[:-1, 1], 'ko')
+        plt.xlim(vor.min_bound[0] - offset, vor.max_bound[0] + offset)
+        plt.ylim(vor.min_bound[1] - offset, vor.max_bound[1] + offset)
+        plt.plot(point.x, point.y, 'rs')
+        plt.show()
 
 
 def create_commit_df(git_dir):
@@ -87,6 +95,23 @@ def tokenize_diff(commit, alpha_only=True):
             continue
 
     return words
+
+
+def tokenize_sc(sc, alpha_only=True):
+    tokens = nltk.word_tokenize(sc)
+    if alpha_only:
+        return [word.lower() for word in tokens if word.isalpha()]
+    else:
+        return [word.lower() for word in tokens]
+
+
+def create_bow(tokens, vocab):
+    bow = get_empty_bow(vocab)
+
+    for token in tokens:
+        if token in list(bow.keys()):
+            bow[token] += 1
+    return bow
 
 
 def create_vocab(tokens, top=256):
