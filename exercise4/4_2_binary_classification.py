@@ -99,8 +99,8 @@ def create_error_report(type, train_score, pred_score):
     else:
         err_report += 'Logistic regression error report\n'
 
-    err_report += 'train error: {}%\n'.format(1 - train_score)
-    err_report += 'prediction error: {}%\n'.format(1 - pred_score)
+    err_report += 'train error: {}%\n'.format((1 - train_score)*100)
+    err_report += 'prediction error: {}%\n'.format((1 - pred_score)*100)
 
     return err_report
 
